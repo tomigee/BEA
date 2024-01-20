@@ -2,6 +2,7 @@
 
 import os
 from json import load
+from copy import copy
 
 import requests
 
@@ -29,14 +30,15 @@ class Bea:
         self.__origin_url = "https://apps.bea.gov/api/data"
         self.request_session = requests.Session()
 
-    def __validate_inputs(self, params):
+    def __validate_inputs(self, params=None):
         # TODO: Custom logic for MNE Dataset
         # TODO: Validate param values
 
         # Overwrite default query params with user-supplied params
-        query_params = self.__query_params
-        for param in params:
-            query_params[param] = params[param]
+        query_params = copy(self.__query_params)
+        if params is not None:
+            for param in params:
+                query_params[param] = params[param]
         return query_params
 
     def __compose_full_url(self, path=None):
@@ -51,6 +53,7 @@ class Bea:
             raise requests.exceptions.RequestException()
 
     def __process_request(self, dataset_name, params):
+        params = copy(params)
         params["datasetname"] = dataset_name
         query_params = self.__validate_inputs(params)
         full_url = self.__compose_full_url()
@@ -59,6 +62,7 @@ class Bea:
 
     def nipa(self, year, frequency, tableName, **kwargs):
         kwargs["Year"], kwargs["Frequency"], kwargs["TableName"] = year, frequency, tableName
+        # print(kwargs)
         response = self.__process_request('NIPA', kwargs)
         return response.text
 
