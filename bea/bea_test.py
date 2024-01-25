@@ -24,13 +24,18 @@ def common_setup(func):
 
 
 # Utilities for parsing and privatizing API responses
-def strip_time_from_api_response(response):
+def strip_times_from_api_response(response):
+    # Strip UTCProductionTime
     if isinstance(response, str):
         response = loads(response)
     if isinstance(response["BEAAPI"]["Results"], list):
         response["BEAAPI"]["Results"][0]["UTCProductionTime"] = "null"
     else:  # assuming dict
         response["BEAAPI"]["Results"]["UTCProductionTime"] = "null"
+
+    # Strip LastRevised from notes
+    if "Notes" in response["BEAAPI"]["Results"]:
+        response["BEAAPI"]["Results"]["Notes"] = "null"
 
     return dumps(response)
 
@@ -118,7 +123,7 @@ def api_endpt_fn_test_output_value(self, api_endpt_fn):
         outputs.update(
             {
                 f'output{count}': impute_api_token(
-                    strip_time_from_api_response(self.responses[response]),
+                    strip_times_from_api_response(self.responses[response]),
                     self.client._Bea__api_token
                 )
             }
@@ -126,7 +131,7 @@ def api_endpt_fn_test_output_value(self, api_endpt_fn):
 
     for input, output in zip(self.inputs, outputs):
         self.assertEqual(
-            strip_time_from_api_response(
+            strip_times_from_api_response(
                 api_endpt_fn(**self.inputs[input])
             ),
             outputs[output]
