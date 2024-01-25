@@ -464,7 +464,11 @@ class TestMneAmne(TestCase):
 
     # Unit tests
     def test_calls_process_request_correctly(self):
-        reqd_args = ["year", "direction_of_investment", "classification", "ownership_level", "non_bank_affiliates_only"]
+        reqd_args = ["year",
+                     "direction_of_investment",
+                     "classification",
+                     "ownership_level",
+                     "non_bank_affiliates_only"]
         api_endpt_fn_calls_process_request_correctly(
             self, self.client.mne_amne,
             reqd_args

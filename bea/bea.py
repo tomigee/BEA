@@ -49,8 +49,8 @@ class Bea:
                     if dataset_name == 'IIP':
                         if (params["Year"] is None) and (params["TypeOfInvestment"] is None):
                             raise TypeError(
-                                "Either exactly one TypeOfInvestment must be requested or exactly one\
-                                Year must be requested."
+                                "Either exactly one TypeOfInvestment must be requested\
+                                or exactly one Year must be requested."
                             )
 
                     if dataset_name == 'IntlServTrade':
